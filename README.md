@@ -26,7 +26,13 @@ El repositorio reúne la Parte 1 (DOSBox y NASM) y la Parte 2 (VirtualBox con Al
 
 ### Decisiones técnicas de DOSBox
 
-Pendiente: justificar el valor de `cycles` y diferenciar las instrucciones emuladas de los ciclos reales de la CPU anfitriona, con un mínimo de 100 palabras por decisión.
+#### Valor fijo de `cycles`
+
+El estudiante selecciona `cycles=8000` como configuración de referencia porque mantiene una carga de trabajo idéntica y permite repetir la medición con el mismo límite de emulación. En las corridas observadas, el bucle tardó 32,79 segundos con 8000 cycles, 4 minutos y 22,33 segundos con 1000, y 13,13 segundos con 20000. Los resultados muestran que reducir el valor alarga la ejecución y aumentarlo la acorta. `cycles=max` dejaría que el anfitrión ejecute el bucle a la máxima velocidad que pueda sostener DOSBox, por lo que el tiempo dependería demasiado del equipo y podría resultar muy breve. `cycles=auto` ajusta el límite según la carga detectada y puede variar entre corridas. El valor fijo no elimina todas las diferencias entre equipos, pero sí mantiene constante un parámetro experimental. `cycles=max` o `auto` sería más útil para software que necesita responder con rapidez y no depende de una temporización histórica reproducible.
+
+#### Cycles emulados frente a ciclos reales del anfitrión
+
+El estudiante distingue el valor `cycles` del archivo de configuración de la frecuencia física de la CPU anfitriona. El valor 8000 no significa que el procesador Ryzen del equipo funcione a 8000 ciclos reales por segundo; representa el límite de trabajo de CPU que DOSBox intenta emular para el programa invitado. Para ejecutar una instrucción x86 de 16 bits, el emulador realiza trabajo adicional en el sistema anfitrión, de modo que el proceso `DOSBox.exe` consume ciclos reales del procesador que no se reflejan directamente en esa cifra. Las mediciones observadas —32,79 segundos a 8000 frente a 13,13 a 20000— comparan el reloj DOS emulado bajo dos límites, no cuentan los ciclos físicos del silicio. Si se requiere estimar el consumo real del anfitrión, el estudiante usaría el Administrador de tareas o un perfilador de procesos para observar el uso de CPU de DOSBox durante la ejecución.
 
 ## Parte 2 — VirtualBox y Alpine Linux
 
@@ -51,7 +57,10 @@ Pendiente: justificar el modo de red y sus implicaciones de seguridad, y compara
 
 ## Capturas
 
-Se agregarán las evidencias reales de los ocho checkpoints de DOSBox y los ocho checkpoints de VirtualBox en `capturas/`.
+- CP2, DOSBox y NASM: `capturas/cp2_dosbox_nasm.png`.
+- CP3, saludo: `capturas/cp3_saludo.png`.
+- CP1, CP4 a CP8: pendientes de reunir y etiquetar.
+- Parte 2, VirtualBox: pendiente.
 
 ## Conclusión
 
