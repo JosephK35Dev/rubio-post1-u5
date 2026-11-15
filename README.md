@@ -67,13 +67,15 @@ Pendiente: justificar el modo de red y sus implicaciones de seguridad, y compara
 
 ## Capturas
 
+- CP1, estructura del repositorio: `capturas/cp1_estructura.png`.
 - CP2, DOSBox y NASM: `capturas/cp2_dosbox_nasm.png`.
 - CP3, saludo: `capturas/cp3_saludo.png`.
 - CP4, entrada de teclado y eco hexadecimal: `capturas/cp4_entrada.png`.
 - CP5, desensamblado y ejecución paso a paso en DEBUG: `capturas/cp5_debug.png`.
 - CP6, medición inicial con `cycles=8000`: `capturas/cp6_ciclos_8000.png`.
 - CP7, comparación con `cycles=1000` y `cycles=20000`: `capturas/cp7_ciclos_1000.png` y `capturas/cp7_ciclos_20000.png`; la corrida de referencia `8000` está en CP6.
-- CP1 (árbol de directorios) y CP8 (README con decisiones y tabla): pendientes de captura.
+- CP8, tabla y primera decisión de `cycles`: `capturas/cp8_tabla_decision_cycles.png`.
+- CP8, segunda decisión sobre ciclos emulados y ciclos reales del anfitrión: pendiente de captura.
 - Parte 2, VirtualBox: pendiente.
 
 ## Conclusión
