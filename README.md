@@ -22,7 +22,7 @@ El repositorio reúne la Parte 1 (DOSBox y NASM) y la Parte 2 (VirtualBox con Al
 |---|---:|---|---|---|
 | 1 | 8000 | 14:35:08:11 | 14:35:40:90 | 32,79 s (3279 centésimas) |
 | 2 | 1000 | 14:41:31:65 | 14:45:53:98 | 4 min 22,33 s (26233 centésimas) |
-| 3 | 20000 | Pendiente | Pendiente | Pendiente |
+| 3 | 20000 | 14:48:08:32 | 14:48:21:45 | 13,13 s (1313 centésimas) |
 
 ### Decisiones técnicas de DOSBox
 
