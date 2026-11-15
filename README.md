@@ -50,7 +50,7 @@ VirtualBox 7.2.22 y una VM `Lab5-Alpine` con Alpine Linux 3.19.0 se instalaron e
 
 La primera comprobación se hizo con 1 CPU y 1024 MiB: `nproc` indicó 1; `free -m` informó 969 MiB de memoria total para el sistema invitado. Con NAT, `ip addr` mostró `10.0.2.15/24` y `ping -c 3 1.1.1.1` recibió 3 de 3 respuestas (0 % de pérdida). La renovación DHCP del adaptador en modo Host-only obtuvo `192.168.56.101/24`; el modo Bridge sobre `Realtek RTL8852BE-VS WiFi 6 802.11ax PCIe Adapter` obtuvo `192.168.80.51/24`.
 
-Luego se cambió la configuración de la VM a 2 CPU y 2048 MiB, y se devolvió a NAT. Esa configuración está guardada en VirtualBox y pendiente de verificar dentro de Alpine tras iniciar sesión. Las pruebas de snapshots, disco fijo frente a dinámico, exportación OVA y documentación de decisiones continúan pendientes; no se reportan mediciones de esas etapas todavía.
+Después de probar los tres modos de red, la VM quedó con 2 CPU y 2048 MiB asignados; Alpine confirmó `nproc = 2` y `free -m = 1976 MiB` utilizables. La VM regresó a NAT. Se creó el snapshot `Pruebas de disco completadas`; para comprobar la restauración se cambió temporalmente la NIC a Host-only y luego se restauró el snapshot. `showvminfo` confirmó que la configuración volvió a NAT, con 2 CPU y 2048 MiB. El árbol de snapshots conserva `Base Alpine instalado y NAT`, `Antes de pruebas de disco` y `Pruebas de disco completadas`.
 
 | Modo de red | Dirección IP observada | Prueba |
 |---|---|---|
@@ -60,14 +60,28 @@ Luego se cambió la configuración de la VM a 2 CPU y 2048 MiB, y se devolvió a
 
 ### Mediciones de disco
 
-| Tipo de disco | Tamaño de prueba | Tiempo observado |
-|---|---:|---|
-| Dinámico | 200 MB | Pendiente |
-| Fijo | 200 MB | Pendiente |
+Se crearon dos discos de prueba de 4 GiB: `Comparacion-Dinamico.vdi` y `Comparacion-Fijo.vdi`. Cada uno se particionó, formateó con ext4, montó por separado y recibió el mismo archivo de 200 MiB mediante `dd` con `conv=fsync` para forzar el vaciado al disco.
+
+| Tipo de disco | Escritura medida | Tiempo `real` | Rendimiento informado por `dd` |
+|---|---:|---:|---:|
+| Dinámico | 200 MiB | 2,10 s (2,093411 s de copia) | 95,5 MB/s |
+| Fijo | 200 MiB | 2,33 s (2,327281 s de copia) | 85,9 MB/s |
+
+Estos resultados son una sola corrida por disco en esta VM y no constituyen un benchmark universal: el anfitrión, la caché, el sistema de archivos y la carga de VirtualBox también influyen. En esta observación el dinámico fue ligeramente más rápido; por tanto, no se atribuye la diferencia a una ventaja general de ese formato.
 
 ### Decisiones técnicas de VirtualBox
 
-Pendiente: justificar el modo de red y sus implicaciones de seguridad, y comparar disco fijo/dinámico junto con la asignación de CPU/RAM. Cada decisión tendrá un mínimo de 100 palabras y se basará en las observaciones del laboratorio.
+#### Modo de red e implicaciones de seguridad
+
+Para una VM de laboratorio personal, el estudiante elige NAT como configuración habitual. En la prueba, NAT entregó la dirección `10.0.2.15/24` y permitió que la VM iniciara conexiones salientes, incluida la prueba ICMP a `1.1.1.1`, sin colocarla directamente como otro equipo visible en la LAN doméstica. Host-only sería preferible para practicar servicios entre la VM y el anfitrión en un entorno aislado, o para simular una red privada de laboratorio; se pierde la salida directa a Internet salvo que se configure enrutamiento adicional. Bridge fue útil para comprobar la obtención de DHCP del router, pero expone la VM a la misma red local y hace que servicios activos, como SSH si se instalara y habilitara, puedan ser alcanzables por otros dispositivos de esa red. La dirección observada `192.168.80.51/24` confirma esa presencia directa. Por ello, el estudiante conserva NAT por defecto y usa Host-only o Bridge solo cuando el objetivo del ejercicio requiere esa conectividad concreta.
+
+#### Disco, CPU y RAM
+
+En la corrida registrada, el disco dinámico escribió 200 MiB en 2,09 s (95,5 MB/s) y el fijo en 2,33 s (85,9 MB/s), así que el dinámico resultó más rápido en esta medición específica; la diferencia no permite afirmar que siempre lo sea, porque una única ejecución depende también de la caché y de la carga del anfitrión. El disco fijo reserva su espacio de 4 GiB desde el inicio y evita expandir gradualmente el archivo VDI conforme se escriben bloques; esa reserva puede reducir variabilidad, pero ocupa el espacio completo incluso si el huésped usa poco. El dinámico conserva espacio en el equipo anfitrión mientras el huésped no llene el disco asignado, una ventaja práctica para cursos y computadores con almacenamiento limitado. La VM quedó con 2 CPU y 2048 MiB: Alpine mostró 2 procesadores y 1976 MiB utilizables. Esa asignación ofrece recursos suficientes para el ejercicio y deja capacidad para Windows anfitrión; asignarle todos los procesadores o la mayor parte de la RAM podría ralentizar el anfitrión y otras aplicaciones.
+
+### Exportación y conclusiones
+
+La VM se exportó correctamente como `Rubio_Post5_U5.ova` en `C:\Users\USUARIO\VirtualBox VMs\Lab5-Alpine\`; el archivo ocupa 151.727.616 bytes (aprox. 144,7 MiB). El OVA y los VDI de prueba permanecen fuera del repositorio, de acuerdo con la guía para no versionar archivos grandes. En esta práctica, DOSBox emula por software un entorno x86/DOS de 16 bits y su parámetro `cycles` cambia el ritmo de ejecución emulado. VirtualBox, en cambio, ejecuta un sistema operativo huésped completo sobre hardware virtualizado, asigna CPU y RAM y permite cambiar interfaces de red, snapshots y discos virtuales. Las mediciones observadas confirman que cada herramienta responde a un propósito distinto: DOSBox sirve para reproducir programas DOS ligeros, mientras VirtualBox permite instalar y administrar un sistema Linux aislado, con costos de recursos y almacenamiento más cercanos a una máquina independiente.
 
 ## Capturas
 
@@ -83,7 +97,12 @@ Pendiente: justificar el modo de red y sus implicaciones de seguridad, y compara
 - Parte 2, NAT e inventario de CPU/RAM: `capturas/p2_nat_recursos.png`.
 - Parte 2, obtención de dirección por DHCP Host-only: `capturas/p2_hostonly.png`.
 - Parte 2, obtención de dirección por DHCP Bridge sobre Wi-Fi: `capturas/p2_bridge.png`.
+- Parte 2, verificación dentro de Alpine de 2 CPU y 2048 MiB: `capturas/p2_recursos_final.png`.
+- Parte 2, benchmark de escritura en disco dinámico: `capturas/p2_benchmark_dinamico.png`.
+- Parte 2, benchmark de escritura en discos dinámico y fijo: `capturas/p2_benchmark_resultados.png`.
+- Parte 2, árbol de snapshots con `Pruebas de disco completadas` activa: `capturas/p2_snapshots.png`.
+- Parte 2, archivo OVA y tamaño visibles en el Explorador: `capturas/p2_export_ova.png`.
 
 ## Conclusión
 
-Pendiente: comparar, a partir de la práctica, la emulación de DOSBox con la virtualización de VirtualBox.
+La práctica muestra que la emulación de DOSBox prioriza recrear un entorno legado concreto con un costo bajo de recursos y control de velocidad mediante `cycles`. VirtualBox permite ejecutar Alpine como sistema huésped completo, adaptar CPU, RAM y red, y guardar estados recuperables mediante snapshots; al restaurar el snapshot final, la red volvió de Host-only a NAT. En el equipo usado, NAT permitió conectividad saliente con aislamiento de la LAN, mientras Bridge incorporó la VM a la red doméstica. El benchmark de 200 MiB produjo resultados próximos y dependientes de la ejecución; para elegir almacenamiento también pesan la reserva inmediata del disco fijo y el menor uso inicial de espacio del dinámico.
