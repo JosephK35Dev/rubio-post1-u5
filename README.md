@@ -16,6 +16,16 @@ El repositorio reúne la Parte 1 (DOSBox y NASM) y la Parte 2 (VirtualBox con Al
 - Configuración personalizada: `dosbox.conf`, con `cycles=8000` como valor de referencia.
 - Programas fuente: `src/saludo.asm`, `src/entrada.asm` y `src/ciclos.asm`.
 
+Los tres programas se ensamblan desde la raíz del disco C: montado en DOSBox:
+
+```text
+NASM -f bin SRC\SALUDO.ASM -o BIN\SALUDO.COM
+NASM -f bin SRC\ENTRADA.ASM -o BIN\ENTRADA.COM
+NASM -f bin SRC\CICLOS.ASM -o BIN\CICLOS.COM
+```
+
+`saludo.com` imprime el título del laboratorio, el nombre Rubio y la unidad. En `entrada.com`, al presionar `a`, se observó `Caracter recibido: a` y el código hexadecimal `61`. DEBUG desensambló el programa desde `CS:0100` y permitió ejecutar sus tres primeras instrucciones con `T`; la pantalla registra los valores reales de los registros.
+
 ### Mediciones de ciclos
 
 | Corrida | cycles | Hora inicial | Hora final | Duración observada |
@@ -59,7 +69,11 @@ Pendiente: justificar el modo de red y sus implicaciones de seguridad, y compara
 
 - CP2, DOSBox y NASM: `capturas/cp2_dosbox_nasm.png`.
 - CP3, saludo: `capturas/cp3_saludo.png`.
-- CP1, CP4 a CP8: pendientes de reunir y etiquetar.
+- CP4, entrada de teclado y eco hexadecimal: `capturas/cp4_entrada.png`.
+- CP5, desensamblado y ejecución paso a paso en DEBUG: `capturas/cp5_debug.png`.
+- CP6, medición inicial con `cycles=8000`: `capturas/cp6_ciclos_8000.png`.
+- CP7, comparación con `cycles=1000` y `cycles=20000`: `capturas/cp7_ciclos_1000.png` y `capturas/cp7_ciclos_20000.png`; la corrida de referencia `8000` está en CP6.
+- CP1 (árbol de directorios) y CP8 (README con decisiones y tabla): pendientes de captura.
 - Parte 2, VirtualBox: pendiente.
 
 ## Conclusión
