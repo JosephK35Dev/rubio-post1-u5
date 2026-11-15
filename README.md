@@ -46,13 +46,17 @@ El estudiante distingue el valor `cycles` del archivo de configuración de la fr
 
 ## Parte 2 — VirtualBox y Alpine Linux
 
-Pendiente: instalación de VirtualBox y Alpine Linux; configuración de red, snapshots, recursos, comparación de discos y exportación OVA.
+VirtualBox 7.2.22 y una VM `Lab5-Alpine` con Alpine Linux 3.19.0 se instalaron en un VDI dinámico de 10 GiB. La instalación se completó en el disco `/dev/sda`; el ISO se retiró y la VM arrancó desde el disco virtual. Se creó el snapshot `Base Alpine instalado y NAT`.
+
+La primera comprobación se hizo con 1 CPU y 1024 MiB: `nproc` indicó 1; `free -m` informó 969 MiB de memoria total para el sistema invitado. Con NAT, `ip addr` mostró `10.0.2.15/24` y `ping -c 3 1.1.1.1` recibió 3 de 3 respuestas (0 % de pérdida). La renovación DHCP del adaptador en modo Host-only obtuvo `192.168.56.101/24`; el modo Bridge sobre `Realtek RTL8852BE-VS WiFi 6 802.11ax PCIe Adapter` obtuvo `192.168.80.51/24`.
+
+Luego se cambió la configuración de la VM a 2 CPU y 2048 MiB, y se devolvió a NAT. Esa configuración está guardada en VirtualBox y pendiente de verificar dentro de Alpine tras iniciar sesión. Las pruebas de snapshots, disco fijo frente a dinámico, exportación OVA y documentación de decisiones continúan pendientes; no se reportan mediciones de esas etapas todavía.
 
 | Modo de red | Dirección IP observada | Prueba |
 |---|---|---|
-| NAT | Pendiente | Pendiente |
-| Host-only | Pendiente | Pendiente |
-| Bridge | Pendiente | Pendiente |
+| NAT | `10.0.2.15/24` | Ping a `1.1.1.1`: 3/3 recibidos, 0 % de pérdida |
+| Host-only | `192.168.56.101/24` | Lease DHCP del host-only `192.168.56.100` |
+| Bridge (Wi-Fi) | `192.168.80.51/24` | Lease DHCP del router `192.168.80.1` |
 
 ### Mediciones de disco
 
@@ -76,7 +80,9 @@ Pendiente: justificar el modo de red y sus implicaciones de seguridad, y compara
 - CP7, comparación con `cycles=1000` y `cycles=20000`: `capturas/cp7_ciclos_1000.png` y `capturas/cp7_ciclos_20000.png`; la corrida de referencia `8000` está en CP6.
 - CP8, tabla y primera decisión de `cycles`: `capturas/cp8_tabla_decision_cycles.png`.
 - CP8, segunda decisión sobre ciclos emulados y ciclos reales del anfitrión: `capturas/cp8_decision_cycles_host.png`.
-- Parte 2, VirtualBox: pendiente.
+- Parte 2, NAT e inventario de CPU/RAM: `capturas/p2_nat_recursos.png`.
+- Parte 2, obtención de dirección por DHCP Host-only: `capturas/p2_hostonly.png`.
+- Parte 2, obtención de dirección por DHCP Bridge sobre Wi-Fi: `capturas/p2_bridge.png`.
 
 ## Conclusión
 
