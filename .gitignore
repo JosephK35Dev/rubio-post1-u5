@@ -1,0 +1,7 @@
+*.obj
+*.exe
+!nasm.exe
+*.vdi
+*.ova
+*.iso
+*.tmp
