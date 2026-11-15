@@ -12,6 +12,7 @@ El repositorio reúne la Parte 1 (DOSBox y NASM) y la Parte 2 (VirtualBox con Al
 - DOSBox: 0.74-3.
 - NASM para DOS: versión 2.16.03 (verificada en DOSBox con `nasm -v`).
 - CWSDPMI: se inicia desde `dosbox.conf` para dar soporte DPMI a NASM para DOS.
+- DEBUG.COM: se reutiliza el depurador DOS del laboratorio anterior, copiado a la raíz para la verificación de `saludo.com`.
 - Configuración personalizada: `dosbox.conf`, con `cycles=8000` como valor de referencia.
 - Programas fuente: `src/saludo.asm`, `src/entrada.asm` y `src/ciclos.asm`.
 
